@@ -1,0 +1,8 @@
+.info_KH_VC {
+    display: flex;
+    justify-content: space-around;
+}
+.anhgh {
+    height: 100px;
+    object-fit: cover;
+}

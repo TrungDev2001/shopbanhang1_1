@@ -1,0 +1,38 @@
+.btn-primary {
+    float: right;
+}
+.fa-circle {
+    color: green;
+    font-size: 20px;
+}
+.fa-circle-o {
+    color: red;
+    font-size: 20px;
+}
+.top-nav img {
+    height: 33px;
+    object-fit: cover;
+}
+.img-thumbnail {
+    height: 150px;
+}
+.select2-container {
+    width: 867px !important;
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+.modal-body .tags {
+    margin-top: 25px;
+}
+.cke_dialog_ui_input_text .cke_dialog_body {
+    z-index : inherit;
+}
+.table>tbody>tr>td>img{
+    width: 100px;
+}
+.detailImage {
+    height: 100px;
+}

@@ -1,0 +1,20 @@
+.btn-primary {
+    float: right;
+}
+img  {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+.top-nav img {
+    height: 33px;
+    object-fit: cover;
+}
+.fa-circle {
+    color: green;
+    font-size: 20px;
+}
+.fa-circle-o {
+    color: red;
+    font-size: 20px;
+}

@@ -1,0 +1,134 @@
+@extends('layouts.admin')
+@section('title')
+    Product
+@endsection
+@section('css')
+    <link rel="stylesheet" href="{{ asset('admins/product/index/index.css') }}">
+    <link href="{{ asset('vendors/select2/select2.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('vendors/sweetalert2Message/sweetalert2Message.css') }}" rel="stylesheet" />
+        <style>
+        ::before {
+            font-size: 20px;
+        }
+    </style>
+@endsection
+@section('content')
+<div class="table-agile-info">
+<div class="panel panel-default">
+<div class="panel-heading">
+    List product
+</div>
+<div class="row w3-res-tb">
+    <div class="col-sm-5 m-b-xs">
+    <select class="input-sm form-control w-sm inline v-middle">
+        <option value="0">Bulk action</option>
+        <option value="1">Delete selected</option>
+        <option value="2">Bulk edit</option>
+        <option value="3">Export</option>
+    </select>
+    <button class="btn btn-sm btn-default">Apply</button>                
+    </div>
+    <div class="col-sm-4">
+    </div>
+    <div class="col-sm-3">
+    <div class="input-group">
+        <input type="text" class="input-sm form-control" placeholder="Search">
+        <span class="input-group-btn">
+        <button class="btn btn-sm btn-default" type="button">Go!</button>
+        </span>
+    </div>
+    <!-- Button trigger modal -->
+    <a href="{{ route('products.create') }}"><button type="button" class="btn btn-primary add-btn">Add cover</button></a>
+    {{-- <button type="button" class="btn btn-primary add-btn" data-toggle="modal" data-target="#addProductModal">Add</button> --}}
+    </div>
+</div>
+<div class="table-responsive">
+    <table class="table table-striped b-t b-light">
+    <thead>
+        <tr>
+        <th style="width:20px;">
+            <label class="i-checks m-b-none">
+            <input type="checkbox"><i></i>
+            </label>
+        </th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Status</th>
+        <th>Image</th>
+        <th>Quantity product</th>
+        <th>Quantity sold</th>
+        <th>Category</th>
+        <th>Brand</th>
+        <th>Date</th>
+        <th>Action</th>
+        <th style="width:30px;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr><td colspan="6" class="text-center"><img style="width: 200px;" src="{{asset('loaderGif/YCZH.gif')}}" alt=""></td></tr>
+    </tbody>
+    </table>
+    <div class="ajax-load text-center" style="display: none">
+        <p><img style="width: 150px" src="{{ asset('loaderGif/loading5.gif') }}" alt=""></p>
+    </div>
+    <div class="load-end text-center" style="display: none">
+        <p><img style="width: 150px" src="loaderGif/theend1.gif" alt=""></p>
+    </div>
+</div>
+    </div>
+</div>
+
+<!-- Modal add-->
+@include('admin.Product.add')
+<!-- Modal edit-->
+{{-- @include('admin.Product.edit') --}}
+
+@endsection
+
+@section('js')
+<script src="{{ asset('vendors/select2/select2.min.js') }}"></script>
+<script src="{{ asset('admins/product/add/add.js') }}"></script>
+<script src="{{ asset('admins/product/index/index.js') }}"></script>
+<script src="{{ asset('admins/product/edit/edit.js') }}"></script>
+<script src="{{ asset('admins/deleteAjaxSweetalert.js') }}"></script>
+<script src="{{ asset('vendors/sweetalert2/sweetalert2@11.js') }}"></script>
+<script src="{{ asset('admins/sweetalert2Message.js') }}"></script>
+
+
+
+
+<script>
+//load ảnh domo
+    var readURL = function(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                console.log(e.target);
+                $('.avatar1').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    $(".file-upload").on('change', function(){
+        readURL(this);
+    });
+</script>
+
+@if (session()->has('ProductAddSuccess'))
+    <script>
+        window.showMessage('Add product success');
+    </script>
+    @php
+        session()->forget('ProductAddSuccess');
+    @endphp
+@endif
+@if (session()->has('editSuccess'))
+    <script>
+        window.showMessage('Edit product success');
+    </script>
+    @php
+        session()->forget('editSuccess');
+    @endphp
+@endif
+
+@endsection

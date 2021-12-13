@@ -1,0 +1,12 @@
+.fa-circle {
+    color: green;
+    font-size: 20px;
+}
+.fa-circle-o {
+    color: red;
+    font-size: 20px;
+}
+.top-nav img {
+    height: 33px;
+    object-fit: cover;
+}
