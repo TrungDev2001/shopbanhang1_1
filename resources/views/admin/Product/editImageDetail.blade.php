@@ -1,6 +1,3 @@
-@php
-    $base_url = 'http://localhost:8000/';
-@endphp
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
@@ -37,7 +34,7 @@
                         <th scope="row">{{ $imageDetail->position }}</th>
                         <td contenteditable="true">{{ $imageDetail->product_ImagesDetail_name }}</td>
                         <td>
-                            <img src="{{ $base_url.$imageDetail->product_ImagesDetail_path }}" alt="">
+                            <img src="{{ url($imageDetail->product_ImagesDetail_path) }}" alt="">
                             {{-- <input type="file" name="" id=""> --}}
                         </td>
                         <td><span><button data-url="{{ url('products/deleteImageDetail/'. $imageDetail->id) }}" class="btn btn-danger delete-sweetalert">Xóa</button></span></td>

@@ -1,13 +1,10 @@
-@php
-    $base_url = 'http://localhost:8000/';
-@endphp
 @foreach ($videos as $video)
     <tr>
         <td><label class="i-checks m-b-none"><input type="checkbox" name="post[]"><i></i></label></td>
         <td>{{ $video->title }}</td>
         <td>{!! $video->discription !!}</td>
         {{-- <td>{{ $video->link }}</td> --}}
-        <td><img src="{{ $base_url.$video->image_path_video }}" alt="{{ $video->image_name_video }}"></td>
+        <td><img src="{{ url($video->image_path_video) }}" alt="{{ $video->image_name_video }}"></td>
         @if ($video->status == 0)
             <td data-url="" id="" class=""><i class="fa fa-circle"></i></td>
         @else

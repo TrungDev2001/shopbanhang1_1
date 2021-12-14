@@ -1,6 +1,3 @@
-@php
-    $base_url = 'http://localhost:8000/';
-@endphp
 @extends('layouts.admin')
 @section('title')
     Product
@@ -65,7 +62,7 @@
             </div>
             <div class="form-group-file">
                 <label for="exampleFormControlFile1">Image product avatar</label>
-                <img src="{{ $base_url.$product->feature_image_path }}" class="avatar1 img-thumbnail" alt="avatar">
+                <img src="{{ url($product->feature_image_path) }}" class="avatar1 img-thumbnail" alt="avatar">
                 <input type="file" name="image_AvatarEdit" class="form-control-file file-upload">
             </div>
 

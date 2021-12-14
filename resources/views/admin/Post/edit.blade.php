@@ -50,7 +50,7 @@
         </div>
         <div class="form-group-file">
             <label for="exampleFormControlFile1">Image post avatar</label>
-            <img src="http://localhost:8000/{{ $post->image_path }}" class="avatar1 img-thumbnail" alt="{{ $post->image_name }}">
+            <img src="{{ url($post->image_path) }}" class="avatar1 img-thumbnail" alt="{{ $post->image_name }}">
             <input type="file" name="FileImagePostAdd" class="form-control-file file-upload" data-validation-error-msg="Image post avatar không được để trống" data-validation="mime size" data-validation-allowing="jpg, png, gif" data-validation-max-size="2M">
         </div>
         <div class="form-group">
