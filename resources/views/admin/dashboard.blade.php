@@ -1,3 +1,7 @@
+@php
+    $base_url = config('base_url.url_fontend.url');
+@endphp
+
 @extends('layouts.admin')
 
 @section('title')
@@ -15,8 +19,8 @@ Home Admin
             </div>
             <div class="col-md-8 market-update-left">
                 <h4>Visitors</h4>
-                <h3>13,500</h3>
-                <p>Other hand, we denounce</p>
+                <h3>{{ $visitor_year }}</h3>
+                <p>Lượng khách hàng truy cập 1 năm</p>
             </div>
             <div class="clearfix"> </div>
         </div>
@@ -29,7 +33,7 @@ Home Admin
             <div class="col-md-8 market-update-left">
                 <h4>Users</h4>
                 <h3>{{ $count_User }}</h3>
-                <p>Other hand, we denounce</p>
+                <p>Tổng số user của hệ thống</p>
             </div>
             <div class="clearfix"> </div>
         </div>
@@ -42,7 +46,7 @@ Home Admin
             <div class="col-md-8 market-update-left">
                 <h4>Sales</h4>
                 <h3>{{ $count_Product }}</h3>
-                <p>Other hand, we denounce</p>
+                <p>Tổng số lượng sản phẩm đang bán</p>
             </div>
             <div class="clearfix"> </div>
         </div>
@@ -55,13 +59,55 @@ Home Admin
             <div class="col-md-8 market-update-left">
                 <h4>Orders</h4>
                 <h3>{{ $count_Oder }}</h3>
-                <p>Other hand, we denounce</p>
+                <p>Tổng số lượng đơn hàng</p>
             </div>
             <div class="clearfix"> </div>
         </div>
     </div>
     <div class="clearfix"> </div>
 </div>
+
+<div class="row">
+    <div class="col-md-6">
+        <canvas id="myChart1" width="400" height="400"></canvas>
+    </div>
+    <style>
+        .product_Topview, .post_Topview {
+            color: black;
+        }
+        .product_Topview:hover {
+            color:rgb(255, 255, 255);
+        }
+        .post_Topview:hover {
+            color:rgb(255, 255, 255);
+        }
+    </style>
+    <div class="col-md-3" style="display: grid">
+        <b>Các sản phẩm xem nhiều nhất</b>
+        @foreach ($products as $product)
+            <a class="product_Topview" href="{{ $base_url.'product/detail/'.$product->id.'/'.$product->slug }}" >{{ Str::words($product->name,4) }} <span style="color: rgb(92, 60, 19);">{{ $product->view_count }}</span></a>
+        @endforeach
+    </div>
+    <div class="col-md-3" style="display: grid">
+        <b>Các bài viết xem nhiều nhất</b>
+        @foreach ($posts as $post)
+            <a class="post_Topview" target="_blank" href="{{ $base_url.'blog/detail/'.$post->id.'/'.$post->slug }}" >{{ Str::words($post->title,4) }} <span style="color: rgb(92, 60, 19);">{{ $post->view_count }}</span></a>
+        @endforeach
+    </div>
+</div>
+
+{{-- <div class="row">
+    <div class="col-md-12">
+        <header class="agileits-box-header clearfix">
+            <h3>Thống kê truy cập</h3>
+            <div class="toolbar">
+
+
+            </div>
+        </header>
+        <div id="myChart2" style=" height: 500px; background-color: #eef9f0;"></div>
+    </div>
+</div> --}}
 <!-- //market-->
 <div class="row">
     <div class="panel-body">
@@ -70,7 +116,7 @@ Home Admin
             <div class="agileinfo-grap">
                 <div class="agileits-box">
                     <header class="agileits-box-header clearfix">
-                        <h3>Visitor Statistics</h3>
+                        <h3>Thông kê truy cập</h3>
                         <div class="toolbar">
 
 
@@ -87,33 +133,8 @@ Home Admin
     </div>
 </div>
 <div class="agil-info-calendar">
-    <!-- calendar -->
-    <div class="col-md-6 agile-calendar">
-        <div class="calendar-widget">
-            <div class="panel-heading ui-sortable-handle">
-                <span class="panel-icon">
-                    <i class="fa fa-calendar-o"></i>
-                </span>
-                <span class="panel-title"> Calendar Widget</span>
-            </div>
-            <!-- grids -->
-            <div class="agile-calendar-grid">
-                <div class="page">
-
-                    <div class="w3l-calendar-left">
-                        <div class="calendar-heading">
-
-                        </div>
-                        <div class="monthly" id="mycalendar"></div>
-                    </div>
-
-                    <div class="clearfix"> </div>
-                </div>
-            </div>
-        </div>
-    </div>
     <!-- //calendar -->
-    <div class="col-md-6 w3agile-notifications">
+    {{-- <div class="col-md-6 w3agile-notifications">
         <div class="notifications">
             <!--notification start-->
 
@@ -186,7 +207,7 @@ Home Admin
 
             <!--notification end-->
         </div>
-    </div>
+    </div> --}}
     <div class="clearfix"> </div>
 </div>
 <!-- tasks -->
@@ -194,37 +215,17 @@ Home Admin
     <div class="col-md-4 agile-last-left">
         <div class="agile-last-grid">
             <div class="area-grids-heading">
-                <h3>Monthly</h3>
+                <h3>Hàng tháng</h3>
             </div>
             <div id="graph7"></div>
             <script>
                 // This crosses a DST boundary in the UK.
-                Morris.Area({
+                var monthlyChartArea = Morris.Area({
                     element: 'graph7',
-                    data: [{
-                            x: '2013-03-30 22:00:00',
-                            y: 3,
-                            z: 3
-                        },
-                        {
-                            x: '2013-03-31 00:00:00',
-                            y: 2,
-                            z: 0
-                        },
-                        {
-                            x: '2013-03-31 02:00:00',
-                            y: 0,
-                            z: 2
-                        },
-                        {
-                            x: '2013-03-31 04:00:00',
-                            y: 4,
-                            z: 4
-                        }
-                    ],
-                    xkey: 'x',
-                    ykeys: ['y', 'z'],
-                    labels: ['Y', 'Z']
+                    parseTime: false,
+                    xkey: 'date',
+                    ykeys: ['sales', 'profit', 'oder_quantity'],
+                    labels: ['Doanh thu', 'Lợi nhuận', 'Số đơn hàng']
                 });
             </script>
 
@@ -233,68 +234,15 @@ Home Admin
     <div class="col-md-4 agile-last-left agile-last-middle">
         <div class="agile-last-grid">
             <div class="area-grids-heading">
-                <h3>Daily</h3>
+                <h3>Hàng ngày</h3>
             </div>
             <div id="graph8"></div>
             <script>
-                /* data stolen from http://howmanyleft.co.uk/vehicle/jaguar_'e'_type */
-                var day_data = [{
-                        "period": "2016-10-01",
-                        "licensed": 3407,
-                        "sorned": 660
-                    },
-                    {
-                        "period": "2016-09-30",
-                        "licensed": 3351,
-                        "sorned": 629
-                    },
-                    {
-                        "period": "2016-09-29",
-                        "licensed": 3269,
-                        "sorned": 618
-                    },
-                    {
-                        "period": "2016-09-20",
-                        "licensed": 3246,
-                        "sorned": 661
-                    },
-                    {
-                        "period": "2016-09-19",
-                        "licensed": 3257,
-                        "sorned": 667
-                    },
-                    {
-                        "period": "2016-09-18",
-                        "licensed": 3248,
-                        "sorned": 627
-                    },
-                    {
-                        "period": "2016-09-17",
-                        "licensed": 3171,
-                        "sorned": 660
-                    },
-                    {
-                        "period": "2016-09-16",
-                        "licensed": 3171,
-                        "sorned": 676
-                    },
-                    {
-                        "period": "2016-09-15",
-                        "licensed": 3201,
-                        "sorned": 656
-                    },
-                    {
-                        "period": "2016-09-10",
-                        "licensed": 3215,
-                        "sorned": 622
-                    }
-                ];
-                Morris.Bar({
+                var daily_chart_area = Morris.Bar({
                     element: 'graph8',
-                    data: day_data,
-                    xkey: 'period',
-                    ykeys: ['licensed', 'sorned'],
-                    labels: ['Licensed', 'SORN'],
+                    xkey: 'date',
+                    ykeys: ['sales', 'profit', 'oder_quantity'],
+                    labels: ['Doanh thu', 'Lợi nhuận', 'Số lượng đơn hàng'],
                     xLabelAngle: 60
                 });
             </script>
@@ -303,57 +251,16 @@ Home Admin
     <div class="col-md-4 agile-last-left agile-last-right">
         <div class="agile-last-grid">
             <div class="area-grids-heading">
-                <h3>Yearly</h3>
+                <h3>Hàng năm</h3>
             </div>
             <div id="graph9"></div>
             <script>
-                var day_data = [{
-                        "elapsed": "I",
-                        "value": 34
-                    },
-                    {
-                        "elapsed": "II",
-                        "value": 24
-                    },
-                    {
-                        "elapsed": "III",
-                        "value": 3
-                    },
-                    {
-                        "elapsed": "IV",
-                        "value": 12
-                    },
-                    {
-                        "elapsed": "V",
-                        "value": 13
-                    },
-                    {
-                        "elapsed": "VI",
-                        "value": 22
-                    },
-                    {
-                        "elapsed": "VII",
-                        "value": 5
-                    },
-                    {
-                        "elapsed": "VIII",
-                        "value": 26
-                    },
-                    {
-                        "elapsed": "IX",
-                        "value": 12
-                    },
-                    {
-                        "elapsed": "X",
-                        "value": 19
-                    }
-                ];
-                Morris.Line({
+                var yearly_chart_area = Morris.Line({
                     element: 'graph9',
-                    data: day_data,
-                    xkey: 'elapsed',
-                    ykeys: ['value'],
-                    labels: ['value'],
+                    parseTime: false,
+                    xkey: 'date',
+                    ykeys: ['sales', 'profit', 'oder_quantity'],
+                    labels: ['Doanh thu', 'Lợi nhuận', 'Số lượng đơn hàng'],
                     parseTime: false
                 });
             </script>
@@ -363,7 +270,7 @@ Home Admin
     <div class="clearfix"> </div>
 </div>
 <!-- //tasks -->
-<div class="agileits-w3layouts-stats">
+{{-- <div class="agileits-w3layouts-stats">
     <div class="col-md-4 stats-info widget">
         <div class="stats-info-agileits">
             <div class="stats-title">
@@ -470,6 +377,128 @@ Home Admin
         </div>
     </div>
     <div class="clearfix"> </div>
+
+
+</div> --}}
+<div class="agil-info-calendar">
+        <!-- calendar -->
+    <div class="col-md-12 agile-calendar">
+        <div class="calendar-widget">
+            <div class="panel-heading ui-sortable-handle">
+                <span class="panel-icon">
+                    <i class="fa fa-calendar-o"></i>
+                </span>
+                <span class="panel-title"> Calendar Widget</span>
+            </div>
+            <!-- grids -->
+            <div class="agile-calendar-grid">
+                <div class="page">
+
+                    <div class="w3l-calendar-left">
+                        <div class="calendar-heading">
+
+                        </div>
+                        <div class="monthly" id="mycalendar"></div>
+                    </div>
+
+                    <div class="clearfix"> </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+@endsection
+
+@section('js')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+
+    {{-- <script>
+        var lineChart_thongketruycap = new Morris.Area({
+            element: 'myChart2',
+            lineColors: ['red', 'green'],
+            fillOpacity: 0.7,
+            parseTime: false,
+            xkey: 'year',
+            ykeys: ['value', 'returning_visitors'],
+            labels: ['Số lượng khách truy cập', 'Khách quay lại']
+        });
+    </script> --}}
+
+    <script>
+        // function area_thongketruycap(){
+        //     $.ajax({
+        //         type: "get",
+        //         url: "{{ route('chart_data_truycap') }}",
+                
+        //         success: function (response) {
+        //             lineChart_thongketruycap.setData(response.chart_data);
+        //         }
+        //     });
+        // }
+        function chart_data_area_doanhthu_daily(){
+            $.ajax({
+                type: "get",
+                url: "{{ route('chart_data_area_doanhthu_daily') }}",
+                success: function (response) {
+                    daily_chart_area.setData(response.chart_data);
+                }
+            });
+        }
+        function chart_data_area_doanhthu_month(){
+            $.ajax({
+                type: "get",
+                url: "{{ route('chart_data_area_doanhthu_month') }}",
+                success: function (response) {
+                    monthlyChartArea.setData(response.chart_data);
+                }
+            });
+        }
+        function chart_data_area_doanhthu_yearly(){
+            $.ajax({
+                type: "get",
+                url: "{{ route('chart_data_area_doanhthu_yearly') }}",
+                success: function (response) {
+                    yearly_chart_area.setData(response.chart_data);
+                }
+            });
+        }
+        // area_thongketruycap();
+        chart_data_area_doanhthu_daily();
+        chart_data_area_doanhthu_month();
+        chart_data_area_doanhthu_yearly();
+    </script>
+
+    <script>
+        const data = {
+            labels: [
+                'Product',
+                'Post',
+                'Video',
+                'User'
+            ],
+            datasets: [{
+                label: 'My First Dataset',
+                data: [<?php echo($count_Product) ?>, <?php echo($count_Post) ?>, <?php echo($count_Video) ?>, <?php echo($count_User) ?>],
+                backgroundColor: [
+                'rgb(255, 99, 132)',
+                'rgb(54, 162, 235)',
+                'rgb(255, 205, 86)',
+                'rgb(81, 252, 226)',
+                ],
+                hoverOffset: 4
+            }]
+        };
+
+        const config1 = {
+            type: 'doughnut',
+            data: data,
+            options: {}
+        };
+        const myChart = new Chart(
+            document.getElementById('myChart1'),
+            config1,
+            
+        );
+    </script>
 
 @endsection

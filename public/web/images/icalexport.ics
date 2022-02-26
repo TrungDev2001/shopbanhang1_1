@@ -1,0 +1,27 @@
+BEGIN:VCALENDAR
+METHOD:PUBLISH
+PRODID:-//Moodle Pty Ltd//NONSGML Moodle Version 2019111802.06//EN
+VERSION:2.0
+BEGIN:VEVENT
+UID:106827@elearning.dhcnhn.vn
+SUMMARY:Lớp: 20213FL5001001- TACB1- HKP
+DTSTAMP:20220221T105639Z
+LAST-MODIFIED:20220221T102458Z
+DTSTART:20220221T074800Z
+DTEND:20220221T101800Z
+DESCRIPTION:Đường dẫn tham gia cuộc họp: https://elearning.dhcnhn.vn/mod/zo
+	om/view.php?id=141099.\n\nNguyễn Thị Kim Thoa (73) is inviting you to a sch
+	eduled Zoom meeting.\n\nTopic: Lớp: 20213FL5001001- TACB1- HKP\nTime: Feb 2
+	0\, 2022 11:48 PM Pacific Time (US and Canada)\n\nJoin Zoom Meeting\nhttps:
+	//zoom.us/j/95367241293?pwd=cEVST2tyejEvUjloOXlJWVArOXdrZz09\n\nMeeting ID:
+	 953 6724 1293\nPasscode: 097362\nOne tap mobile\n+13462487799\,\,953672412
+	93#\,\,\,\,*097362# US (Houston)\n+16699006833\,\,95367241293#\,\,\,\,*0973
+	62# US (San Jose)\n\nDial by your location\n        +1 346 248 7799 US (Hou
+	ston)\n        +1 669 900 6833 US (San Jose)\n        +1 929 436 2866 US (N
+	ew York)\n        +1 253 215 8782 US (Tacoma)\n        +1 301 715 8592 US (
+	Washington DC)\n        +1 312 626 6799 US (Chicago)\nMeeting ID: 953 6724 
+	1293\nPasscode: 097362\nFind your local number: https://zoom.us/u/addAUaWQE
+	C\n\n
+	
+END:VEVENT
+END:VCALENDAR

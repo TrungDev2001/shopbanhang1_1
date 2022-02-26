@@ -93,9 +93,11 @@ class CategoryController extends Controller
                 'parent_id' => $request['parent'],
                 'slug' => Str::slug($request['name'])
             ]);
+            $categorys[] = $category;
+            $viewCategoryAdd = view('admin.Category.data', compact('categorys'))->render();
             return Response()->json([
                 'status' => 200,
-                'category' => $category,
+                'viewCategoryAdd' => $viewCategoryAdd,
                 'message' => 'Thêm danh mục thành công.'
             ]);
         };
@@ -145,9 +147,11 @@ class CategoryController extends Controller
                 'active' => $request['active'],
                 'parent_id' => $request['prent'],
             ]);
+            $categorys[] = $category;
+            $viewCategoryEdit = view('admin.Category.data', compact('categorys'))->render();
             return Response()->json([
                 'status' => 200,
-                'category' => $category,
+                'viewCategoryEdit' => $viewCategoryEdit,
                 'message' => 'Cập nhập thành công'
             ], 200);
         } catch (\Exception $e) {

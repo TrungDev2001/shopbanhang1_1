@@ -138,6 +138,13 @@ class CategoryPostController extends Controller
      */
     public function destroy($id)
     {
-        return $this->DeleteTraits($this->categoryPost, $id);
+        if ($id != 11) { // không được phép xóa danh mục bài tin footer
+            return $this->DeleteTraits($this->categoryPost, $id);
+        } else {
+            return Response()->json([
+                'status' => 500,
+                'message' => 'fail'
+            ], 500);
+        }
     }
 }

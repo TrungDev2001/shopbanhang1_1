@@ -8,6 +8,7 @@ use App\Components\Recusive;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\ProductDocument;
 use App\Models\Tag;
 use App\Traits\deleteTraits;
 use Illuminate\Support\Facades\Validator;
@@ -15,6 +16,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -24,13 +26,15 @@ class ProductController extends Controller
     private $tag;
     private $product;
     private $productImage;
-    public function __construct(Brand $brand, Category $category, Tag $tag, Product $product, ProductImage $productImage)
+    private $productDocument;
+    public function __construct(Brand $brand, Category $category, Tag $tag, Product $product, ProductImage $productImage, ProductDocument $productDocument)
     {
         $this->brand = $brand;
         $this->category = $category;
         $this->tag = $tag;
         $this->product = $product;
         $this->productImage = $productImage;
+        $this->productDocument = $productDocument;
     }
 
     public function getCategory($parentId) //hàm lấy category cha con dùng chung cho create và edit
@@ -55,40 +59,11 @@ class ProductController extends Controller
     public function fetchProduct()
     {
         $products = $this->product->latest()->paginate(5);
-        $html = '';
-        foreach ($products as $product) {
-            $html .= '
-                <tr>
-                    <td><label class="i-checks m-b-none"><input type="checkbox" name="post[]"><i></i></label></td>
-                    <td>' . $product->name . '</td>
-                    <td>' . number_format($product->price, 0, ',', '.') . 'đ</td>';
-            if ($product->active == 0) {
-                $html .= '<td data-url="" id="" class=""><i class="fa fa-circle"></i></td>';
-            } else {
-                $html .= '<td data-url="" id="" class=""><i class="fa fa-circle-o"></i></td>';
-            }
-            $html .= '
-                    <td><img style="height: 100px; object-fit: cover;" class="file-upload" src="' . $product->feature_image_path . '" alt=""></td>\
-                    <td>' . $product->quantity_product . '</td>
-                    <td>' . $product->quantity_sold . '</td>
-                    <td>' . $product->categorys->name . '</td>
-                    <td>' . $product->brands->name . '</td>
-                    <td>' . date_format($product->created_at, "d-m-Y") . '</td>
-                    <td>
-                        <a href="' . url("products/edit_cover/$product->id") . '"><button type="button">Edit</button></a>
-                        <button type="button"><i data-url="products/delete/' . $product->id . '" class="fa fa-times text-danger text delete-sweetalert"></i></button>
-                    </td>
-                </tr>
-            ';
-        }
+        $html = view('admin.Product.components.data_product', compact('products'))->render();
         return Response()->json([
             'status' => 200,
             'html' => $html
         ]);
-        // return Response()->json([
-        //     'status' => 200,
-        //     'products' => $products
-        // ]);
     }
     /**
      * Show the form for creating a new resource.
@@ -111,7 +86,14 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->tagsProductAdd);
+        // if ($request->hasFile('documentAdd')) {
+        //     foreach ($request->file('documentAdd') as $documentAdd_item) {
+        //         $fileDocument_name =  Str::random(6) . '-' . $documentAdd_item->getClientOriginalName();
+        //         $fileDocument_extension = $documentAdd_item->getClientOriginalExtension();
+        //         // $path = Storage::disk('google')->putFile($fileDocument_name, $documentAdd_item);
+        //     }
+        // }
+        // dd($fileDocument_name);
         try {
             DB::beginTransaction();
             $validator = Validator::make(
@@ -150,7 +132,9 @@ class ProductController extends Controller
                 $dataform = [
                     'name' => $request['nameAdd'],
                     'slug' => $request['slugAdd'],
-                    'price' => $request['priceAdd'],
+                    'original_price' => filter_var($request->original_priceAdd, FILTER_SANITIZE_NUMBER_INT),
+                    'price' => filter_var($request->priceAdd, FILTER_SANITIZE_NUMBER_INT),
+                    'promotional_price' => filter_var($request->promotional_priceAdd, FILTER_SANITIZE_NUMBER_INT),
                     'quantity_product' => $request['quantityProductAdd'],
                     'description' => $request['descriptionAdd'],
                     'active' => $request['statusAdd'],
@@ -182,6 +166,20 @@ class ProductController extends Controller
                         ]);
                     }
                 }
+                if ($request->hasFile('documentAdd')) {
+                    foreach ($request->documentAdd as $documentAdd_item) {
+                        $fileDocument_name =  Str::random(6) . '-' . $documentAdd_item->getClientOriginalName();
+                        $fileDocument_extension = $documentAdd_item->getClientOriginalExtension();
+                        $fileDocument_path = 'uploads/product/document/' . Auth()->id() . '/' . time() . Str::random(3) . '.' . $fileDocument_extension;
+                        $documentAdd_item->move('uploads/product/document/' . Auth()->id(), $fileDocument_path);
+                        $file_data = File::get($fileDocument_path);
+                        Storage::disk('google')->put($fileDocument_name, $file_data);
+                        File::delete($fileDocument_path);
+                        $product->ProductDocuments()->create([
+                            'document_name' => $fileDocument_name,
+                        ]);
+                    }
+                }
                 if ($request->tagsProductAdd) {
                     foreach ($request->tagsProductAdd as $itemTag) {
                         $tag = $this->tag->firstOrCreate([
@@ -195,6 +193,7 @@ class ProductController extends Controller
                 DB::commit();
 
                 return redirect()->route('products.index');
+
                 // return Response()->json([
 
                 //     'status' => 200,
@@ -316,7 +315,10 @@ class ProductController extends Controller
             } else {
                 $dataform = [
                     'name' => $request['nameEdit'],
-                    'price' => $request['priceEdit'],
+                    // 'price' => $request['priceEdit'],
+                    'original_price' => filter_var($request->priceOriginalEdit, FILTER_SANITIZE_NUMBER_INT),
+                    'price' => filter_var($request->priceEdit, FILTER_SANITIZE_NUMBER_INT),
+                    'promotional_price' => filter_var($request->pricePromotionalEdit, FILTER_SANITIZE_NUMBER_INT),
                     'description' => $request['descriptionEdit'],
                     'active' => $request['statusEdit'],
                     'user_id' => Auth()->id(),
@@ -382,11 +384,12 @@ class ProductController extends Controller
 
     public function update_cover(Request $request, $id)
     {
-        // dd($request->all());
         $product = $this->product->find($id);
         $data_update_product = [
             'name' => $request->nameEdit,
-            'price' => $request->priceEdit,
+            'original_price' => filter_var($request->priceOriginalEdit, FILTER_SANITIZE_NUMBER_INT),
+            'price' => filter_var($request->priceEdit, FILTER_SANITIZE_NUMBER_INT),
+            'promotional_price' => filter_var($request->pricePromotionalEdit, FILTER_SANITIZE_NUMBER_INT),
             'slug' => $request->slugEdit,
             'description' => $request->descriptionEdit,
             'content' => $request->contentEdit,
@@ -436,9 +439,6 @@ class ProductController extends Controller
                 'message' => 'Edit image detail seccess',
             ]);
         }
-        // elseif($request->file){
-
-        // }
     }
     public function addImageDetail($id, Request $request)
     {
@@ -472,12 +472,30 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $product = $this->product->find($id);
+        foreach ($product->ProductDocuments as $productDocument_item) {
+            $productDocument[] = $productDocument_item->document_name;
+        }
+        // Tìm file và sử dụng ID (path) của nó để xóa
+        $dir = '/'; //thư mục gốc
+        $recursive = false; //  Có lấy file trong các thư mục con không?
+        $contents = collect(Storage::disk('google')->listContents($dir, $recursive));
+        $files = $contents
+            ->where('type', '=', 'file')
+            ->whereIn('name', $productDocument)
+            ->all(); // có thể bị trùng tên file với nhau!
+        foreach ($files as $file) {
+            $file_path[] = $file['path'];
+        }
+        Storage::disk('google')->delete($file_path);
+
         foreach ($product->ProductImages as $item) {
             File::delete($item->product_ImagesDetail_path);
         }
         File::delete($product->feature_image_path);
         $product->ProductImages()->delete();
+        $product->ProductDocuments()->delete();
         $product->tags()->detach();
+
         return $this->deleteTraits($this->product, $id);
     }
     public function destroyImageDetail($id)
@@ -495,6 +513,63 @@ class ProductController extends Controller
         $brands = $this->brand->where('active', 0)->where('category_id', $value)->get();
         foreach ($brands as $brand) {
             echo '<option value=" ' . $brand->id . '">' . $brand->name . '</option>';
+        }
+    }
+
+    public function editDocument(Request $request, $id)
+    {
+        $dir = '/'; //thư mục gốc
+        $recursive = false; //  Có lấy file trong các thư mục con không?
+        $product = $this->product->find($id);
+        foreach ($product->ProductDocuments as $productDocument_item) {
+            $document_name[] = $productDocument_item->document_name;
+        }
+        $documents = collect(Storage::disk('google')->listContents($dir, $recursive))->whereIn('name', $document_name)->all();
+        // dd($documents);
+        $html_dataDocument = view('admin.Product.components.data_editDocument', compact('documents'))->render();
+        return Response()->json([
+            'status' => 200,
+            'html_dataDocument' => $html_dataDocument,
+        ]);
+    }
+    public function deleteDocument($name, $path)
+    {
+        $documents = $this->productDocument->where('document_name', $name)->delete();
+        Storage::disk('google')->delete($path);
+        return Response()->json([
+            'status' => 200,
+        ]);
+    }
+    public function download_document($path, Request $request)
+    {
+        $rawData = Storage::disk('google')->get($path);
+        return response($rawData, 200)
+            ->header('Content-Type', $request->mimetype)
+            ->header('Content-Disposition', "attachment; filename=$request->name");
+    }
+    public function add_document(Request $request, $id)
+    {
+        if ($request->hasFile('addDocument')) {
+            $data_insert = [];
+            foreach ($request->addDocument as $item) {
+                $name = Str::random(6) . '-' . $item->getClientOriginalName();
+                array_push($data_insert, [
+                    'document_name' => $name,
+                    'product_id' => $id,
+                ]);
+                $extention = $item->getClientOriginalExtension();
+                $path = 'uploads/product/document/' . Auth()->id() . '/' . time() . Str::random(3) . '.' . $extention;
+                $item->move('uploads/product/document/' . Auth()->id(), $path);
+                $data = File::get($path);
+                Storage::disk('google')->put($name, $data);
+                if (File::exists($path)) {
+                    File::delete($path);
+                }
+            }
+            $this->productDocument->insert($data_insert);
+            return Response()->json([
+                'status' => 200,
+            ]);
         }
     }
 }

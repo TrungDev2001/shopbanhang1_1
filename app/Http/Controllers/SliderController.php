@@ -31,9 +31,10 @@ class SliderController extends Controller
     public function petchSlider()
     {
         $sliders = $this->slider->latest()->paginate(5);
+        $viewDataSlider = view('admin.Slider.component.data', compact('sliders'))->render();
         return Response()->json([
             'status' => 200,
-            'sliders' => $sliders
+            'viewDataSlider' => $viewDataSlider
         ]);
     }
 

@@ -19,25 +19,27 @@
 </div>
 <div class="row w3-res-tb">
     <div class="col-sm-5 m-b-xs">
-    <select class="input-sm form-control w-sm inline v-middle">
+    {{-- <select class="input-sm form-control w-sm inline v-middle">
         <option value="0">Bulk action</option>
         <option value="1">Delete selected</option>
         <option value="2">Bulk edit</option>
         <option value="3">Export</option>
     </select>
-    <button class="btn btn-sm btn-default">Apply</button>                
+    <button class="btn btn-sm btn-default">Apply</button>                 --}}
     </div>
     <div class="col-sm-4">
     </div>
     <div class="col-sm-3">
     <div class="input-group">
-        <input type="text" class="input-sm form-control" placeholder="Search">
+        {{-- <input type="text" class="input-sm form-control" placeholder="Search">
         <span class="input-group-btn">
         <button class="btn btn-sm btn-default" type="button">Go!</button>
-        </span>
+        </span> --}}
     </div>
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTransportFreeModal">Add</button>
+        @can('transportFee-add')
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTransportFreeModal">Add</button>
+        @endcan
     </div>
 </div>
 <div class="table-responsive">

@@ -40,9 +40,10 @@ class BrandController extends Controller
     {
         $brands = $this->brands->latest()->paginate(5);
         $htmlOption = $this->getCategory($parentId = '');
+        $viewDataBrand = view('admin.Brands.component.data', compact('brands'))->render();
         return Response()->json([
             'status' => 200,
-            'brands' => $brands,
+            'viewDataBrand' => $viewDataBrand,
             'htmlOption' => $htmlOption
         ]);
     }

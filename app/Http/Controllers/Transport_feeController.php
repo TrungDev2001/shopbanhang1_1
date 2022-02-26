@@ -95,25 +95,11 @@ class Transport_feeController extends Controller
     public function petchDataTransportFee()
     {
         $transportFees = $this->transportFee->latest()->paginate(5);
-        $html = '';
-        foreach ($transportFees as $transportFee) {
-            $html .= '<tr>
-                    <td><label class="i-checks m-b-none"><input type="checkbox" name="post[]"><i></i></label></td>
-                    <td>' . $transportFee->ThanhPho->name . '</td>
-                    <td>' . $transportFee->QuanHuyen->name . '</td>
-                    <td>' . $transportFee->XaPhuong->name . '</td>
-                    <td contenteditable data_url="transport_fee/update/' . $transportFee->id . '" class="editPriceShip">' . number_format($transportFee->phivanchuyen, 0, ',', '.') . 'đ</td>
-                    <td>
-                        <a>
-                            <i data-url="transport_fee/delete/' . $transportFee->id . '" class="fa fa-times text-danger text delete-sweetalert"></i>
-                        </a>
-                    </td>
-                </tr>';
-        }
+        $viewDataTransportFee = view('admin.Transport_fee.component.data', compact('transportFees'))->render();
 
         return Response()->json([
             'status' => 200,
-            'html' => $html,
+            'viewDataTransportFee' => $viewDataTransportFee,
         ], 200);
     }
 

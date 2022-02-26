@@ -1,6 +1,6 @@
 @foreach ($videos as $video)
     <tr>
-        <td><label class="i-checks m-b-none"><input type="checkbox" name="post[]"><i></i></label></td>
+        <td>{{ $video->id }}</td>
         <td>{{ $video->title }}</td>
         <td>{!! $video->discription !!}</td>
         {{-- <td>{{ $video->link }}</td> --}}
@@ -14,8 +14,12 @@
         <td>{{ date_format($video->created_at, 'd-m-Y') }}</td>
         <td>
             <a>
-                <i data-url="Video/edit/{{ $video->id }}" data-toggle="modal" data-target="#editVideoModal" class="fa fa-pencil-square-o text-success text-active edit-form"></i>
-                <i data-url="Video/delete/{{ $video->id }}" class="fa fa-times text-danger text delete-sweetalert"></i>
+                @can('video-edit')
+                    <i data-url="Video/edit/{{ $video->id }}" data-toggle="modal" data-target="#editVideoModal" class="fa fa-pencil-square-o text-success text-active edit-form"></i>
+                @endcan
+                @can('video-delete')
+                    <i data-url="Video/delete/{{ $video->id }}" class="fa fa-times text-danger text delete-sweetalert"></i>
+                @endcan
             </a>
         </td>
     </tr>

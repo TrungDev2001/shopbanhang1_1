@@ -25,6 +25,11 @@ $(document).on('click', '.btn-add', function () {
                 petchSlider();
                 $('.avatar1').attr('src', 'web/images/380x500.png');
             }
+        },
+        complete: function (xhr, textStatus) {
+            if (xhr.status == 403) {
+                toastr.error('Tài khoản này không có quyền truy cập');
+            }
         }
     });
 });

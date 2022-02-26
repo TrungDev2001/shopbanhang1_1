@@ -4,7 +4,7 @@ function petchDataTransportFee() {
         url: "transport_fee/petchDataTransportFee",
         success: function (response) {
             // $('tbody').html('');
-            $('tbody').html(response.html);
+            $('tbody').html(response.viewDataTransportFee);
         }
     });
 }
@@ -19,7 +19,7 @@ function petchDataTransportFeePaginate(page) {
         success: function (response) {
             if (response.html != '') {
                 $('.ajax-load').hide();
-                $('tbody').append(response.html);
+                $('tbody').append(response.viewDataTransportFee);
             } else {
                 $('.ajax-load').hide();
                 $('.load-end').show();

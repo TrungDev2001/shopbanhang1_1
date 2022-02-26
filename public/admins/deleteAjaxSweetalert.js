@@ -24,7 +24,14 @@ $(document).on('click', '.delete-sweetalert', function (e) {
                             'success'
                         );
                         that.parent().parent().parent().remove();
-                    };
+                    }
+                },
+                complete: function (xhr, textStatus) {
+                    if (xhr.status == 403) {
+                        toastr.error('Tài khoản này không có quyền truy cập');
+                    } else if (xhr.status == 500) {
+                        toastr.error('Lỗi máy chủ nội bộ');
+                    }
                 }
             });
         }

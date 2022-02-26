@@ -36,6 +36,12 @@ $(document).on('click', '.ShowOder', function () {
             $('#totalPriceBuild').html((response.oder.total_price + response.oder.priceShip - response.priceVoucher).toFixed(1).replace(/\d(?=(\d{3})+\.)/g, '$&.').slice(0, (response.oder.total_price + response.oder.priceShip - response.priceVoucher).toFixed(1).replace(/\d(?=(\d{3})+\.)/g, '$&,').lastIndexOf('.0')));
             $('#statusOder').val(response.oder.active);
             $('#statusOder').attr('data-id', response.oder.id);
+            $('#statusOder').attr('class', response.oder.id);
+            if (response.oder.active == 3 || response.oder.active == 6 || response.oder.active == 4) {
+                $('.' + response.oder.id).attr('disabled', 'disabled');
+            } else {
+                $('.' + response.oder.id).removeAttr('disabled');
+            }
         }
     });
 });
@@ -45,7 +51,9 @@ function updateStatusOder() {
     var statusOder = $(this).val();
     var origin = window.location.origin;
     var url = origin + '/manageOrder/update/' + Oder_id;
-    console.log(url);
+    if (statusOder == 3) {
+        $('#statusOder').attr('disabled', 'disabled');
+    }
     $.ajax({
         type: "post",
         url: url,

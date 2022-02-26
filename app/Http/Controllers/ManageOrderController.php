@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Oder;
 use App\Models\OderDetail;
 use App\Models\Product;
+use App\Models\Statistics;
+use App\Models\Voucher;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -15,11 +17,15 @@ class ManageOrderController extends Controller
     private $oder;
     private $product;
     private $oderDetail;
-    public function __construct(Oder $oder, Product $product, OderDetail $oderDetail)
+    private $statistics;
+    private $voucher;
+    public function __construct(Oder $oder, Product $product, OderDetail $oderDetail, Statistics $statistics, Voucher $voucher)
     {
         $this->oder = $oder;
         $this->product = $product;
         $this->oderDetail = $oderDetail;
+        $this->statistics = $statistics;
+        $this->voucher = $voucher;
     }
     /**
      * Display a listing of the resource.
@@ -70,7 +76,6 @@ class ManageOrderController extends Controller
      */
     public function show($id)
     {
-
         $oder = $this->oder->find($id);
         $userKH = User::find($oder->user_id);
         $oder_detail = $oder->oder_detail;
@@ -84,10 +89,17 @@ class ManageOrderController extends Controller
 
 
         if ($oder->Voucher) {
-            $nameVoucher = $oder->Voucher->name;
-            if ($oder->Voucher->tpye == 0) {
-                $priceVoucher = $oder->total_price * $oder->Voucher->number / 100;
+
+            if ($oder->Voucher->type == 0) {
+                $nameVoucher = $oder->Voucher->name . ' "Mã giảm giá ' . $oder->Voucher->number . '%"';
+                if ($oder->Voucher->numberMax > 0) {
+                    $nameVoucher = $oder->Voucher->name . ' "Mã giảm giá ' . $oder->Voucher->number . '% tối đa ' . number_format($oder->Voucher->numberMax, 0, ',', '.') . 'đ"';
+                    $priceVoucher = $oder->Voucher->numberMax;
+                } else {
+                    $priceVoucher = $oder->total_price * $oder->Voucher->number / 100;
+                }
             } else {
+                $nameVoucher = $oder->Voucher->name . ' "Mã giảm giá ' . number_format($oder->Voucher->number, 0, ',', '.') . 'đ"';
                 $priceVoucher = $oder->Voucher->number;
             }
         }
@@ -154,17 +166,54 @@ class ManageOrderController extends Controller
     public function update(Request $request, $id)
     {
         $oder = $this->oder->find($id);
-
+        $oder_quantity = 0;
+        $sales = 0;
+        $profit = 0;
+        $price_voucher = 0;
         if ($oder) {
             $oder_details = $this->oderDetail->whereIn('oder_id', [$id])->get();
+            $voucher = $this->voucher->find($oder->coupon_id);
+            if ($voucher->type == 0) {
+                $price_voucher = $oder->total_price * ($voucher->number / 100);
+            } else {
+                $price_voucher = $voucher->number;
+            }
+            $sales -= $price_voucher;
+            $sales += $oder->priceShip;
+
             if ($request->statusOder == 3) {
                 foreach ($oder_details as $oder_detail) {
+                    //cập nhập lại số kho và số lượng đã bán
                     $quantity = $oder_detail->quantity;
                     $product = $this->product->find($oder_detail->product_id);
                     $product->update([
                         'quantity_sold' => $product->quantity_sold + $quantity,
                         'quantity_product' => $product->quantity_product - $quantity,
                     ]);
+                    //thống kê doanh thu
+                    $oder_quantity += 1;
+                    $sales += ($oder_detail->price * $oder_detail->quantity);
+                    $profit += $oder_detail->product->original_price;
+                }
+
+                $date_day_statistic = $oder->created_at->format('Y-m-d');
+
+                $data_statistic_create = [
+                    'oder_quantity' => $oder_quantity,
+                    'sales' => $sales,
+                    'profit' => $sales - $profit,
+                    'date_day_statistic' => $date_day_statistic,
+                ];
+                $statistic = $this->statistics->where('date_day_statistic', $date_day_statistic)->first();
+                if ($statistic == null) {
+                    $this->statistics->create($data_statistic_create);
+                } else {
+                    $data_statistic_update = [
+                        'oder_quantity' => $statistic->oder_quantity + $oder_quantity,
+                        'sales' => $statistic->sales + $sales,
+                        'profit' => $statistic->profit + $sales - $profit,
+                    ];
+                    $statistic->update($data_statistic_update);
                 }
             } elseif ($request->statusOder == 0 && $oder->active == 3) {
                 foreach ($oder_details as $oder_detail) {
@@ -215,6 +264,7 @@ class ManageOrderController extends Controller
             $oder->update([
                 'active' => $request->statusOder,
             ]);
+
             return Response()->json([
                 'status' => 200,
 

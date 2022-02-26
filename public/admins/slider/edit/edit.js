@@ -29,6 +29,11 @@ $(document).on('click', '.update-slider', function () {
         success: function (response) {
             petchSlider();
             $('#editSliderModal').modal('hide');
+        },
+        complete: function (xhr, textStatus) {
+            if (xhr.status == 403) {
+                toastr.error('Tài khoản này không có quyền truy cập');
+            }
         }
     });
 });

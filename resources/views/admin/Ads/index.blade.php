@@ -15,42 +15,40 @@
 </div>
 <div class="row w3-res-tb">
     <div class="col-sm-5 m-b-xs">
-    <select class="input-sm form-control w-sm inline v-middle">
+    {{-- <select class="input-sm form-control w-sm inline v-middle">
         <option value="0">Bulk action</option>
         <option value="1">Delete selected</option>
         <option value="2">Bulk edit</option>
         <option value="3">Export</option>
     </select>
-    <button class="btn btn-sm btn-default">Apply</button>                
+    <button class="btn btn-sm btn-default">Apply</button>                 --}}
     </div>
     <div class="col-sm-4">
     </div>
     <div class="col-sm-3">
     <div class="input-group">
-        <input type="text" class="input-sm form-control" placeholder="Search">
+        {{-- <input type="text" class="input-sm form-control" placeholder="Search">
         <span class="input-group-btn">
         <button class="btn btn-sm btn-default" type="button">Go!</button>
-        </span>
+        </span> --}}
     </div>
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addAdsModal">Add</button>
+        <!-- Button trigger modal -->
+        @can('ads-add')
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addAdsModal">Add</button>
+        @endcan
     </div>
 </div>
 <div class="table-responsive">
     <table class="table table-striped b-t b-light">
     <thead>
         <tr>
-        <th style="width:20px;">
-            <label class="i-checks m-b-none">
-            <input type="checkbox"><i></i>
-            </label>
-        </th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Status</th>
-        <th>Image</th>
-        <th>Date</th>
-        <th style="width:30px;"></th>
+            <th>TT</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Image</th>
+            <th>Date</th>
+            <th style="width:30px;"></th>
         </tr>
     </thead>
     <tbody>
@@ -77,13 +75,49 @@
 @section('js')
 <script src="{{ asset('vendors/select2/select2.min.js') }}"></script>
 <script src="{{ asset('admins/ads/add/add.js') }}"></script>
-<script src="{{ asset('admins/ads/index/index.js') }}"></script>
+
 <script src="{{ asset('admins/ads/edit/edit.js') }}"></script>
 <script src="{{ asset('admins/deleteAjaxSweetalert.js') }}"></script>
 <script src="{{asset('vendors/sweetalert2/sweetalert2@11.js')}}"></script>
 <script>
+    function fetchAds() {
+    $.ajax({
+        type: "get",
+        url: "Ads/fetchAds",
+        success: function (response) {
+            $('tbody').html('');
+            $('tbody').prepend(response.viewDataAds);
+        }
+    });
+}
+fetchAds();
 
-
+function loadAdsData(page) {
+    $.ajax({
+        type: "get",
+        url: "Ads/fetchAds?page=" + page,
+        beforeSend: function () {
+            $('.ajax-load').show();
+        },
+        success: function (response) {
+            if (response.viewDataAds == '') {
+                $('.load-end').show();
+                $('.ajax-load').hide();
+                window.loadEnd = true;
+            } else {
+                $('.ajax-load').hide();
+                $('tbody').append(response.viewDataAds);
+            }
+        }
+    });
+}
+var page = 1;
+$(window).scroll(function () {
+    if (($(window).scrollTop() + $(window).height()) + 0.3 >= $(document).height() && window.loadEnd != true) {
+        page++;
+        loadAdsData(page);
+    };
+});
 //load ảnh domo
     var readURL = function(input) {
         if (input.files && input.files[0]) {
@@ -102,4 +136,6 @@
         readURL(this);
     });
 </script>
+
+<script src="{{ asset('admins/ads/index/index.js') }}"></script>
 @endsection

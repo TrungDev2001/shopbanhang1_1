@@ -48,6 +48,7 @@
                 <option value="3">Đã giao</option>
                 <option value="4">Đã hủy</option>
                 <option value="5">Trả hàng</option>
+                <option value="6" disabled>Khách hủy</option>
             </select>
         </div>
     </div>

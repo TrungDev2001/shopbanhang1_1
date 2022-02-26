@@ -38,7 +38,9 @@
         </span>
     </div>
     <!-- Button trigger modal -->
-    <a href="{{ route('products.create') }}"><button type="button" class="btn btn-primary add-btn">Add cover</button></a>
+    @can('product-add')
+        <a href="{{ route('products.create') }}"><button type="button" class="btn btn-primary add-btn">Add cover</button></a>
+    @endcan
     {{-- <button type="button" class="btn btn-primary add-btn" data-toggle="modal" data-target="#addProductModal">Add</button> --}}
     </div>
 </div>
@@ -46,22 +48,19 @@
     <table class="table table-striped b-t b-light">
     <thead>
         <tr>
-        <th style="width:20px;">
-            <label class="i-checks m-b-none">
-            <input type="checkbox"><i></i>
-            </label>
-        </th>
-        <th>Name</th>
-        <th>Price</th>
-        <th>Status</th>
-        <th>Image</th>
-        <th>Quantity product</th>
-        <th>Quantity sold</th>
-        <th>Category</th>
-        <th>Brand</th>
-        <th>Date</th>
-        <th>Action</th>
-        <th style="width:30px;"></th>
+            <th>TT</th>
+            <th>Name</th>
+            <th>Original price</th>
+            <th>Price</th>
+            <th>Promotional price</th>
+            <th>Status</th>
+            <th>Image</th>
+            <th>Quantity product</th>
+            <th>Quantity sold</th>
+            <th>Category</th>
+            <th>Brand</th>
+            <th>Date</th>
+            <th style="width:30px;"></th>
         </tr>
     </thead>
     <tbody>

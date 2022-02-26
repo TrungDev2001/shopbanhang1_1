@@ -25,16 +25,16 @@ class AdsController extends Controller
 
     public function index()
     {
-
         return view('admin.Ads.index');
     }
 
     public function fetchAds()
     {
         $adss = $this->ads->latest()->paginate(5);
+        $viewDataAds = view('admin.Ads.component.data', compact('adss'))->render();
         return Response()->json([
             'status' => 200,
-            'adss' => $adss
+            'viewDataAds' => $viewDataAds
         ], 200);
     }
 

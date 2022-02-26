@@ -32,8 +32,16 @@
                 <input type="text" class="form-control slugEdit" name="slugEdit" id="slug" value="{{ $product->slug }}" data-validation="required" data-validation-error-msg="Slug không được để trống" placeholder="Enter name">
             </div>
             <div class="form-group">
+                <label for="Name">Price original</label>
+                <input type="text" class="form-control format_money" name="priceOriginalEdit" value="{{ $product->original_price }}" data-validation="required" data-validation-error-msg="Price original không được để trống" placeholder="Enter name">
+            </div>
+            <div class="form-group">
                 <label for="Name">Price</label>
-                <input type="number" class="form-control" name="priceEdit" value="{{ $product->price }}" data-validation="required" data-validation-error-msg="Price không được để trống" placeholder="Enter name">
+                <input type="text" class="form-control format_money" name="priceEdit" value="{{ $product->price }}" data-validation="required" data-validation-error-msg="Price không được để trống" placeholder="Enter name">
+            </div>
+            <div class="form-group">
+                <label for="Name">Price promotional</label>
+                <input type="text" class="form-control format_money" name="pricePromotionalEdit" value="{{ $product->promotional_price }}">
             </div>
             <div class="form-group">
                 <label for="Name">Quantity product</label>
@@ -66,6 +74,14 @@
                 <input type="file" name="image_AvatarEdit" class="form-control-file file-upload">
             </div>
 
+            <div class="form-group-file" style="margin-top: 20px;">
+                <label for="exampleFormControlFile1">Document</label>
+                <input type="button" class="text-primary editDocument" data-toggle="modal" data-target="#editDocument" value="Edit">
+                <div id="editImageDetailaJax">
+                    
+                </div>
+            </div>
+
             <div class="form-group-file tags">
                 <label for="exampleFormControlFile1">Image product detail</label>
                 {{-- <input type="file" name="image_DetailEdit[]" class="form-control-file" multiple="multiple" data-validation="required" data-validation-error-msg="Image detail không được để trống"> --}}
@@ -74,8 +90,8 @@
                 <div id="editImageDetailaJax">
                     
                 </div>
-                
             </div>
+
             <div class="form-group">
                 <label for="Textarea1">Content</label>
                 <textarea name="contentEdit" id="contentEdit1" class="form-control" data-validation="required" data-validation-error-msg="Content không được để trống">{!! $product->content !!}</textarea>
@@ -113,6 +129,7 @@
     </div>
 </div>
 @include('admin.Product.editImageDetail')
+@include('admin.Product.components.editDocument')
 @endsection
 
 @section('js')

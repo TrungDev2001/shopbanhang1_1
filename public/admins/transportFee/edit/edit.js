@@ -14,6 +14,11 @@ function editPriceShipp() {
         success: function (response) {
             petchDataTransportFee();
             showMessage('Cập nhập thành công.');
+        },
+        complete: function (xhr, textStatus) {
+            if (xhr.status == 403) {
+                toastr.error('Tài khoản này không có quyền truy cập');
+            }
         }
     });
 }

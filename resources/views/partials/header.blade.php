@@ -2,7 +2,7 @@
     <!--logo start-->
     <div class="brand">
         <a href="web/index.html" class="logo">
-            PShop
+            Trung Bùi
         </a>
         <div class="sidebar-toggle-box">
             <div class="fa fa-bars"></div>
@@ -11,7 +11,7 @@
     <!--logo end-->
     <div class="nav notify-row" id="top_menu">
         <!--  notification start -->
-        <ul class="nav top-menu">
+        {{-- <ul class="nav top-menu">
             <!-- settings start -->
             <li class="dropdown">
                 <a data-toggle="dropdown" class="dropdown-toggle" href="#">
@@ -184,15 +184,15 @@
                 </ul>
             </li>
             <!-- notification dropdown end -->
-        </ul>
+        </ul> --}}
         <!--  notification end -->
     </div>
     <div class="top-nav clearfix">
         <!--search & user info start-->
         <ul class="nav pull-right top-menu">
-            <li>
+            {{-- <li>
                 <input type="text" class="form-control search" placeholder=" Search">
-            </li>
+            </li> --}}
             <!-- user login dropdown start-->
             <li class="dropdown">
                 <a data-toggle="dropdown" class="dropdown-toggle" href="#">
